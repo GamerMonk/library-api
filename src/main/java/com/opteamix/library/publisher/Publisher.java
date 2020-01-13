@@ -1,8 +1,8 @@
-package com.opteamix.library.publisher.model;
+package com.opteamix.library.publisher;
 
 public class Publisher {
 
-	private String publisherId;
+	private Integer publisherId;
 	private String name;
 	private String email;
 	private String phoneNumber;
@@ -11,18 +11,18 @@ public class Publisher {
 		
 	}
 	
-	public Publisher(String publisherId, String name, String email, String phoneNumber) {
+	public Publisher(Integer publisherId, String name, String email, String phoneNumber) {
 		this.publisherId = publisherId;
 		this.name = name;
 		this.email = email;
 		this.phoneNumber = phoneNumber;
 	}
 
-	public String getPublisherId() {
+	public Integer getPublisherId() {
 		return publisherId;
 	}
 
-	public void setPublisherId(String publisherId) {
+	public void setPublisherId(Integer publisherId) {
 		this.publisherId = publisherId;
 	}
 
