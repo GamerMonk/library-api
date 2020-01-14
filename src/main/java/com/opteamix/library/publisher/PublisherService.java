@@ -1,10 +1,13 @@
 package com.opteamix.library.publisher;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.opteamix.library.publisher.exception.LibraryResourceAlreadyExistsException;
+import com.opteamix.library.publisher.exception.LibraryResourceNotFoundException;
 
 @Service
 public class PublisherService {
@@ -12,7 +15,7 @@ public class PublisherService {
 	@Autowired
 	private PublisherRepository publisherRepository;
 
-	public Publisher addPublisher(Publisher publisherToBeAdded) 
+	public void addPublisher(Publisher publisherToBeAdded) 
 			throws LibraryResourceAlreadyExistsException {
 		
 		PublisherEntity publisherEntity = new PublisherEntity(
@@ -28,7 +31,22 @@ public class PublisherService {
 		}
 		
 		publisherToBeAdded.setPublisherId(addedPublisher.getPublisherId());
-		return publisherToBeAdded;
+	}
+
+	public Publisher getPublisher(Integer publisherId) throws LibraryResourceNotFoundException {
+		Optional<PublisherEntity> publisherEntity = publisherRepository.findById(publisherId);
+		Publisher publisher = null;
+		if(publisherEntity.isPresent()) {
+			PublisherEntity pe = publisherEntity.get();
+			publisher = createPublisherFromEntity(pe);
+		} else {
+			throw new LibraryResourceNotFoundException("Publisher Id " + publisherId + " not found");
+		}
+		return publisher;
+	}
+
+	private Publisher createPublisherFromEntity(PublisherEntity pe) {
+		return new Publisher(pe.getPublisherId(), pe.getName(), pe.getEmailId(), pe.getPhoneNumber());
 	}
 
 }
