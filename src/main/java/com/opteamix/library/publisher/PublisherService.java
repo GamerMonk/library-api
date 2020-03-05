@@ -16,7 +16,7 @@ public class PublisherService {
 	@Autowired
 	private PublisherRepository publisherRepository;
 
-	public void addPublisher(Publisher publisherToBeAdded) throws LibraryResourceAlreadyExistsException {
+	public void addPublisher(Publisher publisherToBeAdded, String traceId) throws LibraryResourceAlreadyExistsException {
 
 		PublisherEntity publisherEntity = new PublisherEntity(publisherToBeAdded.getName(),
 				publisherToBeAdded.getEmail(), publisherToBeAdded.getPhoneNumber());
@@ -25,20 +25,20 @@ public class PublisherService {
 		try {
 			addedPublisher = publisherRepository.save(publisherEntity);
 		} catch (DataIntegrityViolationException e) {
-			throw new LibraryResourceAlreadyExistsException("Publisher already exists");
+			throw new LibraryResourceAlreadyExistsException(traceId + " : Publisher already exists");
 		}
 
 		publisherToBeAdded.setPublisherId(addedPublisher.getPublisherId());
 	}
 
-	public Publisher getPublisher(Integer publisherId) throws LibraryResourceNotFoundException {
+	public Publisher getPublisher(Integer publisherId, String traceId) throws LibraryResourceNotFoundException {
 		Optional<PublisherEntity> publisherEntity = publisherRepository.findById(publisherId);
 		Publisher publisher = null;
 		if (publisherEntity.isPresent()) {
 			PublisherEntity pe = publisherEntity.get();
 			publisher = createPublisherFromEntity(pe);
 		} else {
-			throw new LibraryResourceNotFoundException("Publisher Id " + publisherId + " not found");
+			throw new LibraryResourceNotFoundException(traceId + " : Publisher Id " + publisherId + " not found");
 		}
 		return publisher;
 	}
